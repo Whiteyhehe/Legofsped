@@ -193,11 +193,14 @@ local Tab8 = Window:MakeTab({
 
 Tab8:AddDropdown({
     Name = "Select Location",
-    Default = "City",
-    Options = {"City", "Snow City", "Magma City", "Desert", "Legends Highway", "Speed Jungle"},
+    Default = "None",  -- Set default to "None"
+    Options = {"None", "City", "Snow City", "Magma City", "Desert", "Legends Highway", "Speed Jungle"},
     Callback = function(Value)
-        if Value == "City" then
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-595.4251708984375, 3.9864661693573, 552.5006713867188)
+        if Value == "None" then
+            -- Do nothing or leave the player at their current location
+            return
+        elseif Value == "City" then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-9683.54296875, 59.16645431518555, 3102.343505859375)
         elseif Value == "Snow City" then
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-9675.8984375, 59.16645431518555, 3781.609619140625)
         elseif Value == "Magma City" then
