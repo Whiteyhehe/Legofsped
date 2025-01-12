@@ -263,5 +263,6 @@ local Tab7 = Window:MakeTab({
 
 Tab7:AddLabel("Made by: Whitey_plays")
 Tab7:AddLabel("Discord: lwclowny")
+Tab7:AddLabel("Discord Server: https://discord.gg/Vs45KTGYqq")
 
 OrionLib:Init()
