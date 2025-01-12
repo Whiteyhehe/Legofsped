@@ -1,20 +1,16 @@
--- Load the Orion Library
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 
--- Create the main window
 local Window = OrionLib:MakeWindow({Name = "Legend of Speed (test)", HidePremium = false})
 
--- Declare variables for toggles and values
 local farmOrbEnabled = false
 local autoRebirthEnabled = false
 local orbSelected = "Yellow"
-local selectedCity = "City"  -- Default city
+local selectedCity = "City"
 local farmOrbInterval = 1.5
 local trailOrPetName = ""
 local speedValue = 1
 local jumpPowerValue = 1
 
--- Function to give Trail or Pet
 local function giveTrailOrPet(trailOrPetName)
     if trailOrPetName and trailOrPetName ~= "" then
         local args = {
@@ -26,33 +22,30 @@ local function giveTrailOrPet(trailOrPetName)
     end
 end
 
--- Function to start farming orbs with a fixed interval
 local function startFarmOrb(orbSelected)
     if farmOrbEnabled then
         coroutine.wrap(function()
             while farmOrbEnabled do
-                wait(farmOrbInterval)  -- Use the interval set by the user (e.g., 1.5 seconds)
+                wait(farmOrbInterval)
                 for j = 1, 1000 do
                     local orbName = orbSelected
                     if orbSelected ~= "Gem" then
-                        orbName = orbSelected .. " Orb"  -- Append " Orb" for all orbs except Gem
+                        orbName = orbSelected .. " Orb"
                     end
                     
                     local args = {
                         [1] = "collectOrb",
-                        [2] = orbName,  -- Use the dynamically set orb name
-                        [3] = selectedCity  -- Use the dynamically selected city
+                        [2] = orbName,
+                        [3] = selectedCity
                     }
 
-                    -- Fire the orb collection event with the selected orb type and city
                     game:GetService("ReplicatedStorage").rEvents.orbEvent:FireServer(unpack(args))
                 end
             end
-        end)()  -- Start the loop asynchronously
+        end)()
     end
 end
 
--- Function to buy Glitched x2 Trail Boost
 local function buyGlitchedTrailBoost()
     local args = {
         [1] = "upgradeUltimate",
@@ -61,7 +54,6 @@ local function buyGlitchedTrailBoost()
     game:GetService("ReplicatedStorage").rEvents.ultimatesRemote:InvokeServer(unpack(args))
 end
 
--- Function for auto rebirth
 local function startAutoRebirth()
     while autoRebirthEnabled do
         wait(0)
@@ -72,7 +64,6 @@ local function startAutoRebirth()
     end
 end
 
--- Function to auto change speed
 local function autoChangeSpeed(speedValue)
     local args = {
         [1] = "changeSpeed",
@@ -81,7 +72,6 @@ local function autoChangeSpeed(speedValue)
     game:GetService("ReplicatedStorage").rEvents.changeSpeedJumpRemote:InvokeServer(unpack(args))
 end
 
--- Function to auto change jump power
 local function autoChangeJumpPower(jumpPowerValue)
     local args = {
         [1] = "changeJump",
@@ -90,14 +80,11 @@ local function autoChangeJumpPower(jumpPowerValue)
     game:GetService("ReplicatedStorage").rEvents.changeSpeedJumpRemote:InvokeServer(unpack(args))
 end
 
--- Tab for Trail/Pet Giver
 local Tab1 = Window:MakeTab({
     Name = "Trail / Pet Giver 🌟",
-    Icon = "rbxassetid://4483345998",  -- Replaced with rbxassetid
+    Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
-
-Tab1:AddLabel("Give yourself a specific trail or pet.")
 
 Tab1:AddTextbox({
     Name = "Enter Trail / Pet Name",
@@ -111,26 +98,22 @@ Tab1:AddTextbox({
 Tab1:AddButton({
     Name = "Give Trail / Pet",
     Callback = function()
-        giveTrailOrPet(trailOrPetName)  -- Call the function when button is pressed
+        giveTrailOrPet(trailOrPetName)
     end
 })
 
--- Tab for Orb Farming
 local Tab2 = Window:MakeTab({
     Name = "Farm Orb 💎",
-    Icon = "rbxassetid://4483345998",  -- Replaced with rbxassetid
+    Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
-Tab2:AddLabel("Farm orbs with your selected interval.")
-
--- City Selector Dropdown
 Tab2:AddDropdown({
     Name = "City Selector",
     Default = "City",
     Options = {"City", "Snow City", "Magma City", "Legends Highway", "Speed Jungle"},
     Callback = function(Value)
-        selectedCity = Value  -- Store selected city
+        selectedCity = Value
     end
 })
 
@@ -140,7 +123,7 @@ Tab2:AddToggle({
     Callback = function(Value)
         farmOrbEnabled = Value
         if farmOrbEnabled then
-            startFarmOrb(orbSelected)  -- Start farming orbs when toggle is on
+            startFarmOrb(orbSelected)
         end
     end
 })
@@ -159,34 +142,28 @@ Tab2:AddTextbox({
     Default = "1.5",
     TextDisappear = true,
     Callback = function(Value)
-        farmOrbInterval = tonumber(Value) or 1.5  -- Default to 1.5 seconds if invalid input
+        farmOrbInterval = tonumber(Value) or 1.5
     end
 })
 
--- Tab for Glitched x2 Trail Boost
 local Tab3 = Window:MakeTab({
     Name = "Glitched Boost ⚡",
-    Icon = "rbxassetid://4483345998",  -- Replaced with rbxassetid
+    Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
-
-Tab3:AddLabel("Purchase the Glitched x2 Trail Boost.")
 
 Tab3:AddButton({
     Name = "Buy Glitched x2 Trail Boost",
     Callback = function()
-        buyGlitchedTrailBoost()  -- Trigger the function for buying boost
+        buyGlitchedTrailBoost()
     end
 })
 
--- Tab for Auto Rebirth
 local Tab4 = Window:MakeTab({
     Name = "Auto Rebirth ♻️",
-    Icon = "rbxassetid://4483345998",  -- Replaced with rbxassetid
+    Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
-
-Tab4:AddLabel("Automatically rebirth when enabled.")
 
 Tab4:AddToggle({
     Name = "Auto Rebirth Toggle",
@@ -194,72 +171,62 @@ Tab4:AddToggle({
     Callback = function(Value)
         autoRebirthEnabled = Value
         if autoRebirthEnabled then
-            startAutoRebirth()  -- Start auto rebirth when toggle is enabled
+            startAutoRebirth()
         end
     end
 })
 
--- Tab for Auto Change Speed
 local Tab5 = Window:MakeTab({
     Name = "Auto Speed 🏎️",
-    Icon = "rbxassetid://4483345998",  -- Replaced with rbxassetid
+    Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
-
-Tab5:AddLabel("Automatically change your speed value.")
 
 Tab5:AddTextbox({
     Name = "Enter Speed Value",
     Default = "1",
     TextDisappear = true,
     Callback = function(Value)
-        speedValue = tonumber(Value) or 1  -- Default to 1 if invalid input
+        speedValue = tonumber(Value) or 1
     end
 })
 
 Tab5:AddButton({
     Name = "Change Speed",
     Callback = function()
-        autoChangeSpeed(speedValue)  -- Trigger the function when button is pressed
+        autoChangeSpeed(speedValue)
     end
 })
 
--- Tab for Auto Change Jump Power
 local Tab6 = Window:MakeTab({
     Name = "Auto JumpPower 🦘",
-    Icon = "rbxassetid://4483345998",  -- Replaced with rbxassetid
+    Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
-
-Tab6:AddLabel("Automatically change your jump power value.")
 
 Tab6:AddTextbox({
     Name = "Enter Jump Power Value",
     Default = "1",
     TextDisappear = true,
     Callback = function(Value)
-        jumpPowerValue = tonumber(Value) or 1  -- Default to 1 if invalid input
+        jumpPowerValue = tonumber(Value) or 1
     end
 })
 
 Tab6:AddButton({
     Name = "Change JumpPower",
     Callback = function()
-        autoChangeJumpPower(jumpPowerValue)  -- Trigger the function when button is pressed
+        autoChangeJumpPower(jumpPowerValue)
     end
 })
 
 local MiscTab = Window:MakeTab({
     Name = "Misc 💥",
-    Icon = "rbxassetid://4483345998",  -- Replaced with rbxassetid
+    Icon = "rbxassetid://4483345998",
     PremiumOnly = false,
-    BorderColor = Color3.fromRGB(128, 128, 128)  -- Gray border
+    BorderColor = Color3.fromRGB(128, 128, 128)
 })
 
--- Add Universal Scripts label
-MiscTab:AddLabel("Universal Scripts")
-
--- Add Inf Yield script button
 MiscTab:AddButton({
     Name = "Load Inf Yield",
     Callback = function()
@@ -267,7 +234,6 @@ MiscTab:AddButton({
     end
 })
 
--- Add Nameless Admin script button
 MiscTab:AddButton({
     Name = "Load Nameless Admin",
     Callback = function()
@@ -275,7 +241,6 @@ MiscTab:AddButton({
     end
 })
 
--- Add Remote Spy script button
 MiscTab:AddButton({
     Name = "Load Remote Spy",
     Callback = function()
@@ -283,7 +248,6 @@ MiscTab:AddButton({
     end
 })
 
--- Add Fly Mobile script button
 MiscTab:AddButton({
     Name = "Load Fly Mobile",
     Callback = function()
@@ -291,5 +255,13 @@ MiscTab:AddButton({
     end
 })
 
--- Initialize the Orion Library
+local Tab7 = Window:MakeTab({
+    Name = "Credits 📝",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+Tab7:AddLabel("Made by: Whitey_plays")
+Tab7:AddLabel("Discord: lwclowny")
+
 OrionLib:Init()
