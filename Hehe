@@ -400,4 +400,27 @@ local Tab7 = Window:MakeTab({
 Tab7:AddLabel("Made by: Whitey_plays")
 Tab7:AddLabel("Discord: lwclowny")
 
+local textChatService = game:GetService("TextChatService")
+local scriptOwner = "whitey_plays"  -- Define the script owner here
+
+textChatService.OnIncomingMessage = function(message: TextChatMessage)
+    
+    local properties = Instance.new("TextChatMessageProperties")
+    
+    if message.TextSource then
+        
+        local player = game:GetService("Players"):GetPlayerByUserId(message.TextSource.UserId)
+        
+        if player.Name == scriptOwner then
+            properties.PrefixText = "<font color='#00ffee'>[Script Owner]</font> " .. "<font color='#ff8400'>[W Rizz]</font> " .. message.PrefixText
+        elseif player == game.Players.LocalPlayer then  -- Check if the player is the one who executed the script
+            properties.PrefixText = "<font color='#ff0000'>[Script User]</font> " .. message.PrefixText
+        end
+        
+    end
+    
+    return properties
+    
+end
+
 OrionLib:Init()
