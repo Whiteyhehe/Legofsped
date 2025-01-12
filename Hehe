@@ -185,6 +185,33 @@ Tab4:AddToggle({
     end
 })
 
+local Tab8 = Window:MakeTab({
+    Name = "Teleport ✨",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+Tab8:AddDropdown({
+    Name = "Select Location",
+    Default = "City",
+    Options = {"City", "Snow City", "Magma City", "Desert", "Legends Highway", "Speed Jungle"},
+    Callback = function(Value)
+        if Value == "City" then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-595.4251708984375, 3.9864661693573, 552.5006713867188)
+        elseif Value == "Snow City" then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-9675.8984375, 59.16645431518555, 3781.609619140625)
+        elseif Value == "Magma City" then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-11051.4638671875, 217.12646484375, 4898.080078125)
+        elseif Value == "Desert" then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(2512.346435546875, 14.927675247192383, 4357.5576171875)
+        elseif Value == "Legends Highway" then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-13098.7568359375, 217.12646484375, 5905.736328125)
+        elseif Value == "Speed Jungle" then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-15271.2841796875, 398.4812927246094, 5572.15576171875)
+        end
+    end
+})
+
 local Tab5 = Window:MakeTab({
     Name = "Auto Speed 🏎️",
     Icon = "rbxassetid://4483345998",
