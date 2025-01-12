@@ -10,6 +10,7 @@ local farmOrbInterval = 1.5
 local trailOrPetName = ""
 local speedValue = 1
 local jumpPowerValue = 1
+local orbCollectionLoopCount = 1000  -- Default loop count for farming orbs
 
 local function giveTrailOrPet(trailOrPetName)
     if trailOrPetName and trailOrPetName ~= "" then
@@ -27,7 +28,7 @@ local function startFarmOrb(orbSelected)
         coroutine.wrap(function()
             while farmOrbEnabled do
                 wait(farmOrbInterval)
-                for j = 1, 1000 do
+                for j = 1, orbCollectionLoopCount do  -- Use the dynamic loop count
                     local orbName = orbSelected
                     if orbSelected ~= "Gem" then
                         orbName = orbSelected .. " Orb"
@@ -152,6 +153,15 @@ Tab2:AddTextbox({
     TextDisappear = true,
     Callback = function(Value)
         farmOrbInterval = tonumber(Value) or 1.5
+    end
+})
+
+Tab2:AddTextbox({
+    Name = "Enter Orb Collection Loop Count",
+    Default = "1000",  -- Default value is 1000
+    TextDisappear = true,
+    Callback = function(Value)
+        orbCollectionLoopCount = tonumber(Value) or 1000  -- If the input is invalid, default to 1000
     end
 })
 
