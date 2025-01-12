@@ -10,9 +10,9 @@ local farmOrbInterval = 1.5
 local trailOrPetName = ""
 local speedValue = 1
 local jumpPowerValue = 1
-local orbCollectionLoopCount = 1000  -- Default loop count for farming orbs
-local HoopsFarm = false  -- Boolean to control Hoops farming
-local raceLoopActive = false  -- Flag to track race joining loop
+local orbCollectionLoopCount = 1000
+local HoopsFarm = false
+local raceLoopActive = false
 
 local function giveTrailOrPet(trailOrPetName)
     if trailOrPetName and trailOrPetName ~= "" then
@@ -30,7 +30,7 @@ local function startFarmOrb(orbSelected)
         coroutine.wrap(function()
             while farmOrbEnabled do
                 wait(farmOrbInterval)
-                for j = 1, orbCollectionLoopCount do  -- Use the dynamic loop count
+                for j = 1, orbCollectionLoopCount do
                     local orbName = orbSelected
                     if orbSelected ~= "Gem" then
                         orbName = orbSelected .. " Orb"
@@ -98,7 +98,6 @@ Tab1:AddTextbox({
     end
 })
 
--- Global variable to manage the loop status
 local isGivingTrailOrPet = false
 
 Tab1:AddToggle({
@@ -106,16 +105,14 @@ Tab1:AddToggle({
     Default = false,
     Callback = function(Value)
         if Value then
-            -- Start the loop when the toggle is on
             isGivingTrailOrPet = true
             coroutine.wrap(function()
                 while isGivingTrailOrPet do
-                    wait(0)  -- Wait for one frame
+                    wait(0)
                     giveTrailOrPet(trailOrPetName)
                 end
             end)()
         else
-            -- Stop the loop when the toggle is off
             isGivingTrailOrPet = false
         end
     end
@@ -167,10 +164,10 @@ Tab2:AddTextbox({
 
 Tab2:AddTextbox({
     Name = "Enter Orb Collection Loop Count",
-    Default = "1000",  -- Default value is 1000
+    Default = "1000",
     TextDisappear = true,
     Callback = function(Value)
-        orbCollectionLoopCount = tonumber(Value) or 1000  -- If the input is invalid, default to 1000
+        orbCollectionLoopCount = tonumber(Value) or 1000
     end
 })
 
@@ -212,11 +209,10 @@ local Tab8 = Window:MakeTab({
 
 Tab8:AddDropdown({
     Name = "Select Location",
-    Default = "None",  -- Set default to "None"
+    Default = "None",
     Options = {"None", "City", "Snow City", "Magma City", "Desert", "Legends Highway", "Speed Jungle"},
     Callback = function(Value)
         if Value == "None" then
-            -- Do nothing or leave the player at their current location
             return
         elseif Value == "City" then
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-9683.54296875, 59.16645431518555, 3102.343505859375)
@@ -240,9 +236,8 @@ local TabHoopsFarm = Window:MakeTab({
     PremiumOnly = false
 })
 
--- Hoops Farming Loop with no cooldown
 spawn(function()
-    while task.wait(0) do  -- Set task.wait(0) for no delay
+    while task.wait(0) do
         if HoopsFarm then
             pcall(function()
                 for i, v in pairs(game:GetService("Workspace").Hoops:GetChildren()) do
@@ -253,16 +248,14 @@ spawn(function()
     end
 end)
 
--- Toggle for enabling/disabling Hoops farming
 TabHoopsFarm:AddToggle({
     Name = "Hoops Farm Toggle",
     Default = false,
     Callback = function(Value)
         HoopsFarm = Value
         if HoopsFarm then
-            -- Start the Hoops farming coroutine with no cooldown
             spawn(function()
-                while task.wait(0) do  -- Task waits for 0 seconds, meaning no delay
+                while task.wait(0) do
                     if HoopsFarm then
                         pcall(function()
                             for i, v in pairs(game:GetService("Workspace").Hoops:GetChildren()) do
@@ -276,64 +269,50 @@ TabHoopsFarm:AddToggle({
     end
 })
 
--- Create a new tab for Auto Race
 local TabAutoRace = Window:MakeTab({
     Name = "Auto Race 🏁",
-    Icon = "rbxassetid://4483345998",  -- You can replace the icon with your preferred one
+    Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
--- Toggle for enabling/disabling Auto Race
 TabAutoRace:AddToggle({
     Name = "Auto Join Race",
     Default = false,
     Callback = function(Value)
         if Value then
             raceLoopActive = true
-
-            -- Start the loop for joining races and teleporting to finish lines
             coroutine.wrap(function()
                 while raceLoopActive do
-                    -- Fire the joinRace event
                     local args = {
-                        [1] = "joinRace"  -- Send the "joinRace" request to the server
+                        [1] = "joinRace"
                     }
                     game:GetService("ReplicatedStorage").rEvents.raceEvent:FireServer(unpack(args))
 
-                    -- Wait for a moment to ensure the race join process completes
-                    wait(2)  -- Adjusted wait time after joining the race
+                    wait(2)
 
-                    -- Get the player's character
                     local player = game.Players.LocalPlayer
                     local character = player.Character or player.CharacterAdded:Wait()
 
-                    -- Ensure the character is fully loaded and has a primary part
                     if character and character:FindFirstChild("HumanoidRootPart") then
-                        -- Teleport to different race finish parts
                         local finishParts = {
                             game.Workspace.raceMaps.Grassland.finishPart,
                             game.Workspace.raceMaps.Desert.finishPart,
                             game.Workspace.raceMaps.Magma.finishPart
                         }
 
-                        -- Loop through all finish parts
                         for _, finishPart in pairs(finishParts) do
-                            -- If the race loop is active, teleport to the finish part
                             if raceLoopActive then
-                                -- Check if the finish part exists
                                 if finishPart then
                                     character:SetPrimaryPartCFrame(finishPart.CFrame)
-                                    wait(0.5)  -- Small delay between teleportations (optional)
+                                    wait(0.5)
                                 end
                             end
                         end
                     else
-                        -- Wait a bit for the character to load if it's not ready
                         wait(1)
                     end
 
-                    -- Small wait before joining the race again (changed to 2 seconds)
-                    wait(2)  -- Adjusted wait time before joining the race again
+                    wait(2)
                 end
             end)()
         else
@@ -420,8 +399,5 @@ local Tab7 = Window:MakeTab({
 
 Tab7:AddLabel("Made by: Whitey_plays")
 Tab7:AddLabel("Discord: lwclowny")
-
-OrionLib:Init()
-
 
 OrionLib:Init()
