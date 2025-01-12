@@ -95,10 +95,19 @@ Tab1:AddTextbox({
     end
 })
 
-Tab1:AddButton({
-    Name = "Give Trail / Pet",
-    Callback = function()
-        giveTrailOrPet(trailOrPetName)
+Tab1:AddToggle({
+    Name = "Give Trail / Pet Toggle",
+    Default = false,
+    Callback = function(Value)
+        -- If the toggle is on, start a loop to continuously give the trail/pet
+        if Value then
+            coroutine.wrap(function()
+                while Value do
+                    wait(0) -- Waits for one frame, can be adjusted for delay
+                    giveTrailOrPet(trailOrPetName)
+                end
+            end)()
+        end
     end
 })
 
@@ -263,6 +272,5 @@ local Tab7 = Window:MakeTab({
 
 Tab7:AddLabel("Made by: Whitey_plays")
 Tab7:AddLabel("Discord: lwclowny")
-Tab7:AddLabel("Discord Server: https://discord.gg/Vs45KTGYqq")
 
 OrionLib:Init()
