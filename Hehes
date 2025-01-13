@@ -288,7 +288,7 @@ TabAutoRace:AddToggle({
                     }
                     game:GetService("ReplicatedStorage").rEvents.raceEvent:FireServer(unpack(args))
 
-                    wait(2)
+                    wait(0.5)
 
                     local player = game.Players.LocalPlayer
                     local character = player.Character or player.CharacterAdded:Wait()
@@ -312,7 +312,7 @@ TabAutoRace:AddToggle({
                         wait(1)
                     end
 
-                    wait(2)
+                    wait(1)
                 end
             end)()
         else
