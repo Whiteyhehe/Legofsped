@@ -14,17 +14,6 @@ local orbCollectionLoopCount = 1000
 local HoopsFarm = false
 local raceLoopActive = false
 
-local function giveTrailOrPet(trailOrPetName)
-    if trailOrPetName and trailOrPetName ~= "" then
-        local args = {
-            [1] = game:GetService("ReplicatedStorage").cPetShopFolder:FindFirstChild(trailOrPetName)
-        }
-        game:GetService("ReplicatedStorage").cPetShopRemote:InvokeServer(unpack(args))
-    else
-        print("Please enter a valid Trail or Pet name.")
-    end
-end
-
 local function startFarmOrb(orbSelected)
     if farmOrbEnabled then
         coroutine.wrap(function()
@@ -81,6 +70,68 @@ local function autoChangeJumpPower(jumpPowerValue)
         [2] = jumpPowerValue
     }
     game:GetService("ReplicatedStorage").rEvents.changeSpeedJumpRemote:InvokeServer(unpack(args))
+end
+
+local function levenshteinDistance(s, t)
+    local lenS, lenT = #s, #t
+    local matrix = {}
+    for i = 0, lenS do
+        matrix[i] = { [0] = i }
+    end
+    for j = 0, lenT do
+        matrix[0][j] = j
+    end
+    for i = 1, lenS do
+        for j = 1, lenT do
+            local cost = (s:sub(i, i) == t:sub(j, j)) and 0 or 1
+            matrix[i][j] = math.min(
+                matrix[i - 1][j] + 1, -- deletion
+                matrix[i][j - 1] + 1, -- insertion
+                matrix[i - 1][j - 1] + cost -- substitution
+            )
+        end
+    end
+    return matrix[lenS][lenT]
+end
+
+-- Find Closest Match Function
+local function findClosestMatch(inputName, folder)
+    local closestMatch = nil
+    local closestDistance = math.huge
+    for _, child in ipairs(folder:GetChildren()) do
+        local distance = levenshteinDistance(inputName:lower(), child.Name:lower())
+        if distance < closestDistance then
+            closestMatch = child
+            closestDistance = distance
+        end
+    end
+    return closestMatch
+end
+
+-- Give Trail or Pet Function
+local function giveTrailOrPet(trailOrPetName)
+    local folder = game:GetService("ReplicatedStorage").cPetShopFolder
+    if trailOrPetName and trailOrPetName ~= "" then
+        local closestMatch = findClosestMatch(trailOrPetName, folder)
+        if closestMatch then
+            local args = {
+                [1] = closestMatch
+            }
+            game:GetService("ReplicatedStorage").cPetShopRemote:InvokeServer(unpack(args))
+        else
+            OrionLib:MakeNotification({
+                Name = "Error",
+                Content = "No matching trail or pet found.",
+                Time = 5
+            })
+        end
+    else
+        OrionLib:MakeNotification({
+            Name = "Error",
+            Content = "Please enter a valid Trail or Pet name.",
+            Time = 5
+        })
+    end
 end
 
 local Tab1 = Window:MakeTab({
