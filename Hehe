@@ -307,13 +307,64 @@ Tab3:AddButton({
     end
 })
 
-local Tab4 = Window:MakeTab({
-    Name = "Auto Rebirth ♻️",
+local rebirthStopPoint = 0
+local autoRebirth = false
+
+-- Tab for rebirth
+local RebirthTab = Window:MakeTab({
+    Name = "Rebirth",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
-Tab4:AddToggle({
+-- Textbox to set rebirth point stop
+RebirthTab:AddTextbox({
+    Name = "Rebirth Point Stop",
+    Default = "0",
+    TextDisappear = true,
+    Callback = function(value)
+        rebirthStopPoint = tonumber(value) or 0
+    end
+})
+
+-- Toggle for auto rebirth
+RebirthTab:AddToggle({
+    Name = "Auto Rebirth (Point Stop)",
+    Default = false,
+    Callback = function(value)
+        autoRebirth = value
+        if autoRebirth then
+            -- Start auto rebirth
+            spawn(function()
+                while autoRebirth do
+                    local player = game:GetService("Players").LocalPlayer
+                    local rebirths = player.leaderstats.Rebirths.Value -- Detect current rebirth count
+                    
+                    -- Check if rebirths are less than the stop point
+                    if rebirths < rebirthStopPoint then
+                        -- Fire the rebirth event
+                        local args = {
+                            [1] = "rebirthRequest"
+                        }
+                        game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("rebirthEvent"):FireServer(unpack(args))
+                    else
+                        -- Stop auto rebirth if the stop point is reached
+                        autoRebirth = false
+                        OrionLib:MakeNotification({
+                            Name = "Auto Rebirth",
+                            Content = "Rebirth point reached!",
+                            Image = "rbxassetid://4483345998",
+                            Time = 5
+                        })
+                    end
+                    wait(0.1) -- Delay to prevent spamming the event
+                end
+            end)
+        end
+    end
+})
+
+RebirthTab:AddToggle({
     Name = "Auto Rebirth Toggle",
     Default = false,
     Callback = function(Value)
